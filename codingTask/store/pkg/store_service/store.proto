@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option go_package = "grpc/store.proto";
+
+service StoreService {
+  rpc GetStore(StoreID) returns(Store) {}
+  rpc GetHistory(StoreID) returns(History) {}
+  rpc GetVersion(VersionID) returns(Version) {}
+}
+
+message StoreID {
+  int64 storeID = 1;
+}
+
+message VersionID {
+  int64 storeID = 1;
+  int64 versionID = 2;
+}
+
+message Version {
+  int64 ID = 1;
+  Store info = 2;
+  int64 versionNumber = 3;
+  string creator = 4;
+  string owner = 5;
+  string openAt = 6;
+  string closeAt = 7;
+  string createdAt = 8;
+}
+
+message Store {
+  int64 ID = 1;
+  string name = 2;
+  string address = 3;
+  string creator = 4;
+  string created_at = 5;
+}
+
+message History {
+  repeated Version history = 1;
+  Store info = 2;
+}

@@ -1,0 +1,349 @@
+definitions:
+  model.Store:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - address
+    - name
+    type: object
+  model.User:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  model.Version:
+    properties:
+      close_at:
+        type: string
+      created_at:
+        type: string
+      creator:
+        type: string
+      id:
+        type: integer
+      open_at:
+        type: string
+      owner:
+        type: string
+      store_id:
+        type: integer
+      version_number:
+        type: integer
+    required:
+    - close_at
+    - creator
+    - open_at
+    - owner
+    - store_id
+    - version_number
+    type: object
+  response.VersionResp:
+    properties:
+      close_at:
+        type: string
+      created_at:
+        type: string
+      creator:
+        type: string
+      id:
+        type: integer
+      open_at:
+        type: string
+      owner:
+        type: string
+      store:
+        $ref: '#/definitions/model.Store'
+      store_id:
+        type: integer
+      version_number:
+        type: integer
+    required:
+    - close_at
+    - created_at
+    - creator
+    - open_at
+    - owner
+    - version_number
+    type: object
+  rest.ErrorResponse:
+    properties:
+      message:
+        type: string
+      response_error:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is a simple service to create some operations with stores.
+  title: Swagger for Gateway Service
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: log in user in system with login=qwerty ans pass=secretPass
+      operationId: AuthUser
+      parameters:
+      - description: User credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - AuthUser
+  /store/:
+    post:
+      consumes:
+      - application/json
+      description: create new store
+      parameters:
+      - description: Store
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Store'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: CreateStore
+  /store/{id}:
+    delete:
+      description: delete store by setting flag is_deleted=true
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteStore
+    get:
+      consumes:
+      - application/json
+      description: get store by id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Store'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: GetStore
+  /store/{id}/history:
+    get:
+      consumes:
+      - application/json
+      description: get store history by id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: StoreHistory
+  /store/{id}/verion/{version_id}/{creator}:
+    delete:
+      description: delete store version by setting flag is_deleted=true
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: version_id
+        in: path
+        name: version_id
+        required: true
+        type: integer
+      - description: creator
+        in: path
+        name: creator
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteVersion
+  /store/{id}/version:
+    post:
+      consumes:
+      - application/json
+      description: create new store version
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Version
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Version'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: CreateVersion
+  /store/{id}/version/{version_id}:
+    get:
+      consumes:
+      - application/json
+      description: get store version by id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: version_id
+        in: path
+        name: version_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.VersionResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+        default:
+          description: ""
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: StoreVersion
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
