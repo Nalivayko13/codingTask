@@ -80,7 +80,7 @@ func (r *RepoPostgres) GetVersion(ctx context.Context, storeID, versionID int) (
 
 	result := r.db.QueryRowContext(ctx,
 		`SELECT id, store_id, version_number, creator, owner, created_at, open_at, close_at
-					FROM versions WHERE id = $1 and store_id=$2`, versionID, storeID)
+					FROM versions WHERE id = $1 and store_id=$2 ORDER BY created_at DESC`, versionID, storeID)
 	if err := result.Scan(&version.ID, &version.StoreID, &version.VersionNumber, &version.Creator,
 		&version.Owner, &version.CreatedAt, &version.OpenAt, &version.CloseAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
